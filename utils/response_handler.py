@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 
-
 load_dotenv('config/environ/.env')
 
 
@@ -14,3 +13,4 @@ def response(data=None, success=False, message="Failed", error=None, offset=None
         "limit": limit,
         "offset": offset,
     }
+

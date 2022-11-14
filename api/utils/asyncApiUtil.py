@@ -21,9 +21,9 @@ async def request_multiple_urls(urls: List[str]):
         return await asyncio.gather(*tasks)
 
 
-async def request_url(url: str):
+async def get_request_url(url: str, params: dict = {}):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
+        async with session.get(url, params=params) as resp:
             return await resp.json()
 
 

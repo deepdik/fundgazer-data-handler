@@ -38,7 +38,7 @@ pip install -r /path/to/requirements.txt
 ## Setup .env file
 
 ```
- - Go to Console and copy ".localenv" to ".env" in the same folder
+ - Go to Console and copy ".env_copy" to ".env" in the same folder
  - cp /path/to/.localenv /path/to/.env
  - Change the value as per your local setup
  - To run the Swagger Document, please change the value of ENV i.e "ENV=DEV"

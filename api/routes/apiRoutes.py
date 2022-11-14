@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.controllers import test
+from api.controllers import binance_controller
 
 routers = APIRouter()
-routers.include_router(test.router)
+routers.include_router(binance_controller.router)
