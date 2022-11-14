@@ -30,23 +30,49 @@ async def read_root():
 
 
 @router.get("/price", response_description="")
-async def symbol_price_ticker():
+async def save_symbol_price_ticker():
     url = BINANCE_SERVER_1+SYMBOL_PRICE_TICKER
 
     #resp = await request_url(url)
 
-    resp = [{"symbol": "ETHBTC","price": "-1.00000000"}, {"symbol": "LTCBTC","price": "12.00265100"}]
+    resp = [{"symbol": "ETHBTC","price": "1.00000000"}, {"symbol": "LTCBTC","price": "12.00265100"}]
 
     response = await price_ticker_service(resp)
+
+    return resp
+
+
+@router.get("/price-ticker", response_description="")
+async def save_symbol_price_ticker():
+    url = BINANCE_SERVER_1+SYMBOL_PRICE_TICKER
+
+    #resp = await request_url(url)
+
+    resp = [{"symbol": "ETHBTC","price": "1.00000000"}, {"symbol": "LTCBTC","price": "12.00265100"}]
+
+    response = await price_ticker_service(resp)
+    return resp
+
+
+@router.get("/kline", response_description="")
+async def save_symbol_kline():
+    url = BINANCE_SERVER_1+SYMBOL_PRICE_TICKER
+
+    #resp = await request_url(url)
+    resp = [[1499040000000,"0.01634790", "0.80000000", "0.01575800", "0.01577100",
+             "148976.11427815", 1499644799999, "2434.19055334", 308, "1756.87402397", "28.46694368", "0"],[1499040000000,"0.01634790", "0.80000000", "0.01575800", "0.01577100",
+             "148976.11427815", 1499644799999, "2434.19055334", 308, "1756.87402397", "28.46694368", "0"]]
+
+    response = await candle_stick_service(resp)
+
     return response
 
 
 @router.get("/kline", response_description="")
-async def symbol_price_ticker():
+async def symbol_kline():
     url = BINANCE_SERVER_1+SYMBOL_PRICE_TICKER
 
     #resp = await request_url(url)
-
     resp = [[1499040000000,"0.01634790", "0.80000000", "0.01575800", "0.01577100",
              "148976.11427815", 1499644799999, "2434.19055334", 308, "1756.87402397", "28.46694368", "0"],[1499040000000,"0.01634790", "0.80000000", "0.01575800", "0.01577100",
              "148976.11427815", 1499644799999, "2434.19055334", 308, "1756.87402397", "28.46694368", "0"]]
