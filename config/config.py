@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     DB_URI: str = os.getenv("MONGODB_URI")
     DATE_FORMAT = "DD-MM-YYYY"
     LOCAL_TIME_ZONE = "Asia/Calcutta"
+    KLINE_DEFAULT_VALID = 30 # min
 
     class Config:
         case_sensitive = True

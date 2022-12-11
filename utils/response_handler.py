@@ -8,9 +8,9 @@ def response(data=None, success=False, message="Failed", error=None, offset=None
         "success": success,
         "message": message,
         "data": data,
-        "error": error,
-        "total": total,
-        "limit": limit,
-        "offset": offset,
+        "error": error
+#         "total": total,
+#         "limit": limit,
+#         "offset": offset,
     }
 

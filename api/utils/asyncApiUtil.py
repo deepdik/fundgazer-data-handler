@@ -24,8 +24,8 @@ async def request_multiple_urls(urls: List[str]):
 async def get_request_url(url: str, params: dict = {}):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, params=params) as resp:
-            return await resp.json()
-
-
-
+            if 200 <= resp.status < 300:
+                return [True, await resp.json()]
+            else:
+                return [False, await resp.json()]
 

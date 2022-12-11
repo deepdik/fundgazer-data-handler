@@ -1,18 +1,16 @@
 from datetime import date, datetime, time, timedelta
-from typing import List
+import pytz
 
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
-from pydantic.config import Enum
 from pydantic.fields import Field
 
-from api.repository.binance_repo import retrieve_latest_ticker
 from api.utils.datetime_convertor import convert_utc_to_local
 
 CRYPTO_SYMBOLS = {"ETHBTC": "ETHBTCE", "LTCBTC": "LTCBTCE"}
 
 
-class PriceTickerDataModel(BaseModel):
+class PriceTickerValidator(BaseModel):
     """
     Price : (Non negative , non zero , float)
     Decimal place validation ( for stocks 2 , for crypto 8)
@@ -24,29 +22,34 @@ class PriceTickerDataModel(BaseModel):
 
     @validator('price')
     def price_round(cls, value):
-        print("pricer")
         return round(value, 8)
 
     @validator('symbol')
     def symbol_validation(cls, value):
-        print("symbol")
         if not CRYPTO_SYMBOLS.get(value):
             raise ValueError(f"Symbol {value} not found")
+        return value
 
-    @root_validator(pre=False)
-    def check(cls, values):
-        #print(retrieve_latest_ticker(values["symbol"]))
-        return values
+
+def validate_ticker_range(v_data, pre_data):
+    """
+    :param v_data:
+    :param pre_data:
+    :return:
+    """
+    for data in v_data:
+        pre_price = next((item for item in pre_data if item["symbol"] == data["symbol"]), None)
+        if pre_price:
+            per_change = (pre_price["price"] - data["price"]) / pre_price["price"] * 100
+            if abs(per_change) > 50:
+                raise ValueError(f"Percentage change in price for {data['symbol']} is greater than permitted")
 
 
 class CandlestickDataModel(BaseModel):
     """
     Same TIMEZONE across all exchanges, symbols for any of the above data
     Same format  , like “YYYY-MM-DD” or “DD-MM-YYYY.”
-    For candle data , date-time should not be missing for trading days. (consistency)
-    For candle data,  date-time should not be repeated. => (check in Db for data with timestamp)
-    For candle data , the latest candle date-time should be same for all symbols in symbol list.
-    For candle data, length of historical candle data should be same for all symbols in symbol list.
+
 
     1499040000000,      // Kline open time
     "0.01634790",       // Open price
@@ -83,8 +86,7 @@ class CandlestickDataModel(BaseModel):
 
     @root_validator(pre=False)
     def check(cls, values):
-        print(values["low_price"], values["high_price"])
-        if values["high_price"] <= values["low_price"]:
+        if values["high_price"] < values["low_price"]:
             raise ValueError("Low Price should less than high price")
 
         if values["close_time"] < values["open_time"]:
@@ -93,3 +95,42 @@ class CandlestickDataModel(BaseModel):
         return values
 
 
+def klineValidator(v_data, limit):
+    """
+    For candle data , date-time should not be missing for trading days. (consistency)-> No candle data interval should be missing
+    For candle data,  date-time should not be repeated. => (check in Db for data with timestamp) -> duplicate candle with internval
+    For candle data , the latest candle date-time should be same for all symbols in symbol list. -> open<curr<=closed
+    For candle data, length of historical candle data should be same for all symbols in symbol list. -> length()
+
+    :param v_data:
+    :return:
+    """
+    if len(v_data) != limit:
+        raise ValueError(f"Length of data miss match (data-{len(v_data)} limit-{limit})")
+
+    latest_candle = v_data[-1]
+    local_dt = datetime.now()
+    dt_utc = local_dt.astimezone(pytz.UTC)
+    local_time = convert_utc_to_local(dt_utc)
+    if not (latest_candle.open_time < local_time <= latest_candle.close_time):
+        raise ValueError("Candle data is not latest")
+
+    start = 0
+    timedict = {}
+    latest_time = local_time - timedelta(days=365)
+    while start < limit:
+        if timedict.get(v_data[start].open_time) and timedict.get(v_data[start].open_time) == v_data[start].close_time:
+            raise ValueError("duplicate candle found")
+        else:
+            timedict[v_data[start].open_time] = v_data[start].close_time
+
+        if 1 < start:
+            diff = v_data[start].open_time - v_data[start - 1].close_time
+            if diff.total_seconds() > 1:
+                raise ValueError("Some Candle data is missing")
+
+        if latest_time < v_data[start].open_time:
+            latest_time = v_data[start].open_time
+        start += 1
+
+    return latest_time

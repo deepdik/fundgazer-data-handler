@@ -1,6 +1,7 @@
 import os
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne
 
 from config.config import get_config
 from utils.logger import logger_config
