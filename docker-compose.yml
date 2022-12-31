@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+
+  datahandler-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dk5f95/datahandler
+    command: uvicorn main:app --host 0.0.0.0 --reload --port 8000
+    volumes:
+      - /Volumes/MyLab/freelance/dataHandler:/app
+    restart: on-failure
+    ports:
+      - 8000:8000
+#    depends_on:
+#      - rabbitmq
+    networks:
+      - strategymanager_strategy-network
+
+#  redis:
+#    image: redis:latest
+#    ports:
+#      - 6378:6379
+#    depends_on:
+#      - rabbitmq
+
+  datahandler-celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dk5f95/datahandler-celery-worker
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+#    depends_on:
+#      - rabbitmq
+    networks:
+      - strategymanager_strategy-network
+
+  datahandler-celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    image: dk5f95/datahandler-celery-beat
+    command: /start-celerybeat
+    depends_on:
+      - datahandler-celery-worker
+#      - rabbitmq
+    networks:
+      - strategymanager_strategy-network
+
+networks:
+  strategymanager_strategy-network:
+    external: true

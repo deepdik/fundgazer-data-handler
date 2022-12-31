@@ -1,13 +1,13 @@
-from datetime import date, datetime, time, timedelta
+from datetime import datetime, timedelta
 import pytz
 
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 from pydantic.fields import Field
 
+from api.models.general_models import DataRefreshType, TaskDueType
 from api.utils.datetime_convertor import convert_utc_to_local
-
-CRYPTO_SYMBOLS = {"ETHBTC": "ETHBTCE", "LTCBTC": "LTCBTCE"}
+from main import settings
 
 
 class PriceTickerValidator(BaseModel):
@@ -26,8 +26,8 @@ class PriceTickerValidator(BaseModel):
 
     @validator('symbol')
     def symbol_validation(cls, value):
-        if not CRYPTO_SYMBOLS.get(value):
-            raise ValueError(f"Symbol {value} not found")
+        # if not settings.SYMBOL_LIST_MAPPING:
+        #     raise ValueError(f"Symbol {value} not found")
         return value
 
 
@@ -40,7 +40,7 @@ def validate_ticker_range(v_data, pre_data):
     for data in v_data:
         pre_price = next((item for item in pre_data if item["symbol"] == data["symbol"]), None)
         if pre_price:
-            per_change = (pre_price["price"] - data["price"]) / pre_price["price"] * 100
+            per_change = (float(pre_price["price"]) - data["price"]) / float(pre_price["price"]) * 100
             if abs(per_change) > 50:
                 raise ValueError(f"Percentage change in price for {data['symbol']} is greater than permitted")
 
@@ -105,7 +105,7 @@ def klineValidator(v_data, limit):
     :param v_data:
     :return:
     """
-    if len(v_data) != limit:
+    if limit and len(v_data) != limit:
         raise ValueError(f"Length of data miss match (data-{len(v_data)} limit-{limit})")
 
     latest_candle = v_data[-1]
@@ -118,7 +118,7 @@ def klineValidator(v_data, limit):
     start = 0
     timedict = {}
     latest_time = local_time - timedelta(days=365)
-    while start < limit:
+    while start < len(v_data):
         if timedict.get(v_data[start].open_time) and timedict.get(v_data[start].open_time) == v_data[start].close_time:
             raise ValueError("duplicate candle found")
         else:
@@ -134,3 +134,11 @@ def klineValidator(v_data, limit):
         start += 1
 
     return latest_time
+
+
+class TaskSchedulerValidator(BaseModel):
+    refresh_type: DataRefreshType
+    run_after: TaskDueType
+    run_after_val: int
+    data: dict
+

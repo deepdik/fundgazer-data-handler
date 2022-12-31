@@ -1,16 +1,12 @@
-from dotenv import load_dotenv
-
-load_dotenv('config/environ/.env')
+from fastapi.responses import JSONResponse
 
 
-def response(data=None, success=False, message="Failed", error=None, offset=None, limit=None, total=0):
-    return {
-        "success": success,
-        "message": message,
-        "data": data,
-        "error": error
-#         "total": total,
-#         "limit": limit,
-#         "offset": offset,
-    }
-
+def response(data=None, success=False, message="Failed", error=None, status_code: int = 200):
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "success": success,
+            "message": message,
+            "data": data,
+            "error": error
+        })

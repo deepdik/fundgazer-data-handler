@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Union
 from config.database.mongo import MongoManager
 from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne, UpdateMany
@@ -10,10 +11,9 @@ async def save_binance_ticker(data):
     database = await MongoManager.get_instance()
     if isinstance(data, list):
         for obj in data:
-            print(obj)
             query = {"symbol": obj["symbol"]}
             update = {"$set": obj}
-            database.binance_ticker.update_one(query, update, upsert=True)
+            await database.binance_ticker.update_one(query, update, upsert=True)
     elif isinstance(data, dict):
         query = {"symbol": data["symbol"]}
         update = {"$set": data}
@@ -42,15 +42,17 @@ async def save_candle_stick(data, latest_time):
     # ]
     # print(await database.binance_candle_stick.drop())
     await database.binance_candle_stick.update_one(query, update, upsert=True)
-    print(await database.binance_candle_stick.count_documents({}))
-    print(await database.binance_candle_stick.find({}).to_list(1000))
+    #print(await database.binance_candle_stick.count_documents({}))
+    #print(await database.binance_candle_stick.find({}).to_list(1000))
 
 
-async def get_candle_stick(symbol, interval, curr_time):
+async def get_candle_stick(symbols: list, interval: str, curr_time: datetime):
+    print(symbols)
     database = await MongoManager.get_instance()
-    query = {"symbol": symbol, "interval": interval, "valid_upto": {"$gt": curr_time}}
-    print(await database.binance_candle_stick.count_documents({}))
-    return await database.binance_candle_stick.find_one(query)
+    print(curr_time)
+    query = {"symbol": {"$in": symbols}, "interval": interval, "valid_upto": {"$gte": str(curr_time)}}
+    #print(await database.binance_candle_stick.count_documents({}))
+    return await database.binance_candle_stick.find(query).to_list(100)
 
 
 async def retrieve_candle_stick(data):
