@@ -6,7 +6,7 @@ from pydantic.class_validators import root_validator
 from pydantic.fields import Field
 
 from api.models.general_models import DataRefreshType, TaskDueType
-from api.utils.datetime_convertor import convert_utc_to_local
+from api.utils.datetime_convertor import convert_utc_to_local, get_current_local_time
 from main import settings
 
 
@@ -19,6 +19,7 @@ class PriceTickerValidator(BaseModel):
     """
     symbol: str = Field(required=True, min_length=1)
     price: float = Field(gt=0, required=True)
+    last_updated: datetime = Field(required=False, default=get_current_local_time())
 
     @validator('price')
     def price_round(cls, value):
@@ -38,11 +39,19 @@ def validate_ticker_range(v_data, pre_data):
     :return:
     """
     for data in v_data:
+        # get internal mapping symbol
+
         pre_price = next((item for item in pre_data if item["symbol"] == data["symbol"]), None)
         if pre_price:
             per_change = (float(pre_price["price"]) - data["price"]) / float(pre_price["price"]) * 100
             if abs(per_change) > 50:
                 raise ValueError(f"Percentage change in price for {data['symbol']} is greater than permitted")
+
+
+def get_symbol_mapping(v_data, symbol_mapping):
+    for data in v_data:
+        data.symbol = symbol_mapping[data.symbol]
+    return v_data
 
 
 class CandlestickDataModel(BaseModel):
@@ -134,11 +143,3 @@ def klineValidator(v_data, limit):
         start += 1
 
     return latest_time
-
-
-class TaskSchedulerValidator(BaseModel):
-    refresh_type: DataRefreshType
-    run_after: TaskDueType
-    run_after_val: int
-    data: dict
-

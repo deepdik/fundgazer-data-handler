@@ -22,3 +22,12 @@ def convert_utc_to_local(timestamp, time_zone=settings.LOCAL_TIME_ZONE, need_dat
         return datetime.strptime(local_dt, settings.DATE_FORMAT)
     return local_dt
 
+
+def get_current_local_time():
+    """
+    :return:
+    """
+    local_dt = datetime.now()
+    dt_utc = local_dt.astimezone(pytz.UTC)
+    local_time = convert_utc_to_local(dt_utc)
+    return local_time

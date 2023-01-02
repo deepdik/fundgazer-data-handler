@@ -8,6 +8,7 @@ setting = get_config()
 
 
 async def save_binance_ticker(data):
+    print(data)
     database = await MongoManager.get_instance()
     if isinstance(data, list):
         for obj in data:
@@ -24,6 +25,7 @@ async def save_binance_ticker(data):
 
 async def retrieve_latest_ticker(symbol: list):
     database = await MongoManager.get_instance()
+    # await database.binance_ticker.drop()
     return await database.binance_ticker.find({"symbol": {"$in": symbol}}).to_list(1000)
 
 
@@ -42,8 +44,6 @@ async def save_candle_stick(data, latest_time):
     # ]
     # print(await database.binance_candle_stick.drop())
     await database.binance_candle_stick.update_one(query, update, upsert=True)
-    #print(await database.binance_candle_stick.count_documents({}))
-    #print(await database.binance_candle_stick.find({}).to_list(1000))
 
 
 async def get_candle_stick(symbols: list, interval: str, curr_time: datetime):
@@ -51,8 +51,8 @@ async def get_candle_stick(symbols: list, interval: str, curr_time: datetime):
     database = await MongoManager.get_instance()
     print(curr_time)
     query = {"symbol": {"$in": symbols}, "interval": interval, "valid_upto": {"$gte": str(curr_time)}}
-    #print(await database.binance_candle_stick.count_documents({}))
-    return await database.binance_candle_stick.find(query).to_list(100)
+    # print(await database.binance_candle_stick.count_documents({}))
+    return await database.binance_candle_stick.find(query).to_list(1000)
 
 
 async def retrieve_candle_stick(data):

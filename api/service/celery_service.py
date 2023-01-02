@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from api.models.general_models import TaskDueType, DataRefreshType
 from api.service.binance_service import save_price_ticker_service
 from api.utils.celery_tasks.data_handler import binance_data_refresh, test_celery
-from api.validators.binance_validator import TaskSchedulerValidator
+from api.validators.task_schedular import TaskSchedulerValidator
 
 
 async def task_scheduler(data: TaskSchedulerValidator):
@@ -24,24 +24,25 @@ async def task_scheduler(data: TaskSchedulerValidator):
 
     print(eta, data, exp)
     if data.refresh_type == DataRefreshType.BINANCE_TICKER:
-        binance_data_refresh.apply_async(
+        resp = binance_data_refresh.apply_async(
             queue='data-handler', priority=9,
             args=[],
             kwargs={"symbols": data.data["symbols"], "refresh_type": data.refresh_type},
             eta=eta,
             expires=exp
         )
-    if data.refresh_type == DataRefreshType.BINANCE_KLINE:
-        binance_data_refresh.apply_async(
+    elif data.refresh_type == DataRefreshType.BINANCE_KLINE:
+        resp = binance_data_refresh.apply_async(
             queue='data-handler', priority=9,
             args=[],
             kwargs={"symbols": data.data["symbols"],
                     "refresh_type": data.refresh_type,
                     "exchange": data.data["exchange"],
                     "interval": data.data["interval"]
-            },
+                    },
             eta=eta,
             expires=exp
-            )
+        )
+    # save task to DB
 
     return True

@@ -1,0 +1,56 @@
+{
+  "ICXUSDT": {
+    "binance":"ICXUSDT"
+  },
+  "XMRUSDT": {
+    "binance":"XMRUSDT"
+  },
+  "EOSUSDT": {
+    "binance":"EOSUSDT"
+  },
+  "QTUMUSDT": {
+    "binance":"QTUMUSDT"
+  },
+  "ETCUSDT": {
+    "binance":"ETCUSDT"
+  },
+  "VETUSDT": {
+    "binance":"VETUSDT"
+  },
+  "XLMUSDT": {
+    "binance":"XLMUSDT"
+  },
+  "ETHUSDT": {
+    "binance":"ETHUSDT"
+  },
+  "ADAUSDT": {
+    "binance":"ADAUSDT"
+  },
+  "SOLUSDT": {
+    "binance":"SOLUSDT"
+  },
+  "XRPUSDT": {
+    "binance":"XRPUSDT"
+  },
+  "DOTUSDT": {
+    "binance":"DOTUSDT"
+  },
+  "LTCUSDT": {
+    "binance":"LTCUSDT"
+  },
+  "UNIUSDT": {
+    "binance":"UNIUSDT"
+  },
+  "LINKUSDT": {
+    "binance":"LINKUSDT"
+  },
+  "BCHUSDT": {
+    "binance":"BCHUSDT"
+  },
+  "MATICUSDT": {
+    "binance":"MATICUSDT"
+  },
+  "BTCUSDT": {
+    "binance":"BTCUSDT"
+  }
+}

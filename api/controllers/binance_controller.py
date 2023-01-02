@@ -5,10 +5,8 @@ from fastapi import APIRouter, HTTPException, Body
 from api.service.binance_service import (get_candle_stick_service,
                                          save_candle_stick_service, get_price_ticker_service, save_price_ticker_service)
 
-from api.validators.binance_validator import TaskSchedulerValidator
 
 
-# APIRouter creates path operations for product module
 router = APIRouter(
     prefix="/api/v1",
     tags=["dataHandler"],
@@ -44,12 +42,3 @@ async def save_symbol_price_ticker(symbols: str):
 async def save_kline(symbols: str, interval: str, exchange: str = "binance"):
     resp = await save_candle_stick_service(symbols, exchange, interval)
     return resp
-
-
-@router.post("/add/celery-task", response_description="")
-async def add_refresh_task(data: TaskSchedulerValidator):
-    """"""
-    from api.service.celery_service import task_scheduler
-
-    await task_scheduler(data)
-    return True
