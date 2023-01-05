@@ -10,6 +10,7 @@ setting = get_config()
 async def save_binance_ticker(data):
     print(data)
     database = await MongoManager.get_instance()
+    #await database.binance_ticker.drop()
     if isinstance(data, list):
         for obj in data:
             query = {"symbol": obj["symbol"]}
@@ -42,7 +43,7 @@ async def save_candle_stick(data, latest_time):
     #     UpdateOne(query, {"$pull": {"kline_data": {"open_time": {"$gte": latest_time}}}}),
     #     UpdateOne(query, {"$push": {'kline_data': data["kline_data"]}})
     # ]
-    # print(await database.binance_candle_stick.drop())
+    #await database.binance_candle_stick.drop()
     await database.binance_candle_stick.update_one(query, update, upsert=True)
 
 

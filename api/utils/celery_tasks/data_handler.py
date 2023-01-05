@@ -57,7 +57,7 @@ def periodic_binance_ticker(*args, **kwargs):
 celery.conf.beat_schedule = {
     'binance_kline_data_refresh': {
         'task': 'periodic_binance_kline',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(),
         'args': [],
         'kwargs': {'symbols': settings.SYMBOL_LIST, "exchange": 'binance', 'interval': '1d'},
         'options': {'queue': 'data-handler'}
