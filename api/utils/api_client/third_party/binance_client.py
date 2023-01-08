@@ -7,7 +7,6 @@ async def binance_ticker_client(symbols: list):
     url = settings.BINANCE_SERVER_1 + settings.BINANCE_TICKER
     str_symbol = ','.join(f'"{w}"' for w in symbols)
     params = {"symbols": f'[{str_symbol}]'} if symbols else {}
-    print(params)
     return await async_api_caller(url, APIMethodEnum.GET, params)
 
 

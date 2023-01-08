@@ -15,7 +15,8 @@ def convert_utc_to_local(timestamp, time_zone=settings.LOCAL_TIME_ZONE, need_dat
     """
     # Make a naive datetime.datetime in a given time zone aware
     if timestamp.tzname() != "UTC":
-        raise ValueError("date time in not UTC format")
+        print(timestamp.tzname())
+        raise ValueError("date time is not in UTC format")
     localtz = pytz.timezone(time_zone)
     local_dt = timestamp.astimezone(localtz)
     if need_date:

@@ -52,5 +52,33 @@
   },
   "BTCUSDT": {
     "binance":"BTCUSDT"
+  },
+  "SNXUSDT": {
+    "binance":"SNXUSDT"
+  },
+  "AAVEUSDT": {
+    "binance":"AAVEUSDT"
+  },
+  "RENUSDT": {
+    "binance":"RENUSDT"
+  },
+  "COMPUSDT": {
+    "binance":"COMPUSDT"
+  },
+  "IOTAUSDT": {
+    "binance":"IOTAUSDT"
+  },
+  "KAVAUSDT": {
+    "binance":"KAVAUSDT"
+  },
+  "ATOMUSDT": {
+    "binance":"ATOMUSDT"
+  },
+  "MKRUSDT": {
+    "binance":"MKRUSDT"
+  },
+  "BATUSDT": {
+    "binance":"BATUSDT"
   }
+
 }

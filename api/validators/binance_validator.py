@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from typing import Optional
+
 import pytz
 
 from pydantic import BaseModel, validator
@@ -25,11 +27,8 @@ class PriceTickerValidator(BaseModel):
     def price_round(cls, value):
         return round(value, 8)
 
-    @validator('symbol')
-    def symbol_validation(cls, value):
-        # if not settings.SYMBOL_LIST_MAPPING:
-        #     raise ValueError(f"Symbol {value} not found")
-        return value
+    class Config:
+        validate_assignment = True
 
 
 def validate_ticker_range(v_data, pre_data):
@@ -40,7 +39,6 @@ def validate_ticker_range(v_data, pre_data):
     """
     for data in v_data:
         # get internal mapping symbol
-
         pre_price = next((item for item in pre_data if item["symbol"] == data["symbol"]), None)
         if pre_price:
             per_change = (float(pre_price["price"]) - data["price"]) / float(pre_price["price"]) * 100
@@ -58,7 +56,6 @@ class CandlestickDataModel(BaseModel):
     """
     Same TIMEZONE across all exchanges, symbols for any of the above data
     Same format  , like “YYYY-MM-DD” or “DD-MM-YYYY.”
-
 
     1499040000000,      // Kline open time
     "0.01634790",       // Open price
@@ -80,10 +77,10 @@ class CandlestickDataModel(BaseModel):
     close_price: float = Field(gt=0, required=True)
     volume: float = Field(gt=0, required=True)
     close_time: datetime = Field(required=True)
-    quote_asset_vol: float = Field(gt=0, required=True)
-    no_of_trade: int = Field(gt=0, required=True)
-    buy_base_asset_vol: float = Field(gt=0, required=True)
-    buy_quote_asset_vol: float = Field(gt=0, required=True)
+    quote_asset_vol: Optional[float] = Field(gt=0, required=True)
+    no_of_trade: Optional[int] = Field(gt=0, required=True)
+    buy_base_asset_vol: Optional[float] = Field(gt=0, required=True)
+    buy_quote_asset_vol: Optional[float] = Field(gt=0, required=True)
 
     @validator("open_time")
     def open_time_conversion(cls, value):
@@ -98,10 +95,14 @@ class CandlestickDataModel(BaseModel):
         if values["high_price"] < values["low_price"]:
             raise ValueError("Low Price should less than high price")
 
+        print(values["close_time"], values["open_time"])
         if values["close_time"] < values["open_time"]:
-            raise ValueError("Closed time should less than open time")
+            raise ValueError("Closed time should be greater than open time")
 
         return values
+
+    class Config:
+        validate_assignment = True
 
 
 def klineValidator(v_data, limit):

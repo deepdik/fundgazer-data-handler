@@ -90,8 +90,8 @@ async def save_candle_stick_service(symbols, exchange: str, interval: str = "1d"
                                     limit: int = None):
     if interval not in ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h",
                         "6h", "8h", "12h", "1d", "3d", "1w", "1M"]:
-        raise validation_exception_handler
-    symbol_list = []
+        return {"success": False, "message": "Invalid Interval value"}
+
     if isinstance(symbols, str):
         symbols = symbols.split(",")
 
@@ -139,7 +139,6 @@ async def save_candle_stick_service(symbols, exchange: str, interval: str = "1d"
             logger.error(e)
             failed_symbols.append(symbol)
             # Retry Logic - Error handler than can push event to rabbitmq
-
     if not failed_symbols and not not_supported_symb:
         return {"success": True}
     return {"success": False, "failed": failed_symbols, "completed":completed,

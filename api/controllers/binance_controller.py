@@ -6,7 +6,6 @@ from api.service.binance_service import (get_candle_stick_service,
                                          save_candle_stick_service, get_price_ticker_service, save_price_ticker_service)
 
 
-
 router = APIRouter(
     prefix="/api/v1",
     tags=["dataHandler"],
