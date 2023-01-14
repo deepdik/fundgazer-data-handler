@@ -1,0 +1,2 @@
+
+1673706384441 :: history :: {'symbol': 'NSE:SBIN-EQ', 'range_from': datetime.date(2022, 1, 1), 'range_to': datetime.date(2021, 1, 14), 'resolution': None, 'date_from': '1', 'cont_flag': '1'} :: 1673706384508 :: {'s': 'error', 'code': -334, 'message': 'Please provide a valid key date format value'}
