@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     DB_URI: str = os.getenv("MONGODB_URI")
     DATE_FORMAT = "DD-MM-YYYY"
     LOCAL_TIME_ZONE = "Asia/Calcutta"
-    KLINE_DEFAULT_VALID: int = 30 # min
+    KLINE_DEFAULT_VALID: int = 30  # min
 
     HTTP_TOO_MANY_REQ_SLEEP: int
     HTTP_REQ_TIMEOUT_SLEEP: int
@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     CELERY_ACKS_LATE: bool
 
     SYMBOL_LIST: List[str]
+    FYERS_SYMBOL_LIST: str
 
     class Config:
         case_sensitive = True

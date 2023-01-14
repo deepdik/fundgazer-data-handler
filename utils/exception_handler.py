@@ -21,6 +21,10 @@ async def internal_server_error(request: Request, exc: RequestValidationError):
     return response(error="Internal server error. Please try after some time", status_code=500)
 
 
+@app.exception_handler(ValueError)
+def value_error_exception_handler(request: Request, exc: ValueError):
+    return response(error=str(exc), status_code=400)
+
 @app.exception_handler(Exception)
 async def invalid_argument(request: Request, exc: RequestValidationError):
     return response(error="", status_code=500)

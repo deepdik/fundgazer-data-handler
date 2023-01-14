@@ -6,7 +6,7 @@ from main import app
 
 client = TestClient(app)
 
-from api.utils.api_client.third_party.binance_client import binance_ticker_client, binance_kline_client
+from api.utils.api_client.third_party.binance.binance_client import binance_ticker_client, binance_kline_client
 
 
 @pytest.mark.asyncio

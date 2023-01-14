@@ -1,5 +1,4 @@
 import json
-import requests
 import time
 import pyotp
 import os
@@ -59,64 +58,55 @@ def verify_otp(request_key, totp):
         return [ERROR, e]
 
 
+async def get_fyers_obj():
+    session = accessToken.SessionModel(client_id=client_id, secret_key=SECRET_KEY, redirect_uri=REDIRECT_URI,
+                                response_type='code', grant_type='authorization_code')
 
-session = accessToken.SessionModel(client_id=client_id, secret_key=SECRET_KEY, redirect_uri=REDIRECT_URI,
-                            response_type='code', grant_type='authorization_code')
+    urlToActivate = session.generate_authcode()
+    print(f'URL to activate APP:  {urlToActivate}')
 
-urlToActivate = session.generate_authcode()
-print(f'URL to activate APP:  {urlToActivate}')
+    # Step 1 - Retrieve request_key from send_login_otp API
+    send_otp_result = send_login_otp(fy_id=FY_ID, app_id=APP_ID_TYPE)
 
-
-
-# Step 1 - Retrieve request_key from send_login_otp API
-
-send_otp_result = send_login_otp(fy_id=FY_ID, app_id=APP_ID_TYPE)
-
-if send_otp_result[0] != SUCCESS:
-    print(f"send_login_otp failure - {send_otp_result[1]}")
-    sys.exit()
-else:
-    print("send_login_otp success")
-
-
-# Step 2 - Verify totp and get request key from verify_otp API
-for i in range(1,3):
-    request_key = send_otp_result[1]
-    verify_totp_result = verify_otp(request_key=request_key, totp=pyotp.TOTP(TOTP_KEY).now())
-    if verify_totp_result[0] != SUCCESS:
-        print(f"verify_totp_result failure - {verify_totp_result[1]}")
-        time.sleep(1)
+    if send_otp_result[0] != SUCCESS:
+        print(f"send_login_otp failure - {send_otp_result[1]}")
+        sys.exit()
     else:
-        print(f"verify_totp_result success {verify_totp_result}")
-        break
+        print("send_login_otp success")
 
-request_key_2 = verify_totp_result[1]
+    # Step 2 - Verify totp and get request key from verify_otp API
+    for i in range(1,3):
+        request_key = send_otp_result[1]
+        verify_totp_result = verify_otp(request_key=request_key, totp=pyotp.TOTP(TOTP_KEY).now())
+        if verify_totp_result[0] != SUCCESS:
+            print(f"verify_totp_result failure - {verify_totp_result[1]}")
+            time.sleep(1)
+        else:
+            print(f"verify_totp_result success {verify_totp_result}")
+            break
 
-# Step 3 - Verify pin and send back access token
-ses = requests.Session()
-payload_pin = {"request_key":f"{request_key_2}","identity_type":"pin","identifier":f"{PIN}","recaptcha_token":""}
-res_pin = ses.post('https://api-t2.fyers.in/vagator/v2/verify_pin', json=payload_pin).json()
-print(res_pin['data'])
-ses.headers.update({
-    'authorization': f"Bearer {res_pin['data']['access_token']}"
-})
+    request_key_2 = verify_totp_result[1]
+    # Step 3 - Verify pin and send back access token
+    ses = requests.Session()
+    payload_pin = {"request_key":f"{request_key_2}","identity_type":"pin","identifier":f"{PIN}","recaptcha_token":""}
+    res_pin = ses.post('https://api-t2.fyers.in/vagator/v2/verify_pin', json=payload_pin).json()
+    print(res_pin['data'])
+    ses.headers.update({
+        'authorization': f"Bearer {res_pin['data']['access_token']}"
+    })
 
+    authParam = {"fyers_id":FY_ID,"app_id":APP_ID,"redirect_uri":REDIRECT_URI,"appType":APP_TYPE,"code_challenge":"","state":"None","scope":"","nonce":"","response_type":"code","create_cookie":True}
+    authres = ses.post('https://api.fyers.in/api/v2/token', json=authParam).json()
+    print(authres)
+    url = authres['Url']
+    print(url)
+    parsed = urlparse(url)
+    auth_code = parse_qs(parsed.query)['auth_code'][0]
 
+    session.set_token(auth_code)
+    response = session.generate_token()
+    access_token= response["access_token"]
+    print(access_token)
 
-authParam = {"fyers_id":FY_ID,"app_id":APP_ID,"redirect_uri":REDIRECT_URI,"appType":APP_TYPE,"code_challenge":"","state":"None","scope":"","nonce":"","response_type":"code","create_cookie":True}
-authres = ses.post('https://api.fyers.in/api/v2/token', json=authParam).json()
-print(authres)
-url = authres['Url']
-print(url)
-parsed = urlparse(url)
-auth_code = parse_qs(parsed.query)['auth_code'][0]
-
-
-
-session.set_token(auth_code)
-response = session.generate_token()
-access_token= response["access_token"]
-print(access_token)
-
-fyers = fyersModel.FyersModel(client_id=client_id, token=access_token, log_path=os.getcwd())
-print(fyers.get_profile())
+    fyers = fyersModel.FyersModel(client_id=client_id, token=access_token, log_path=os.getcwd())
+    return fyers

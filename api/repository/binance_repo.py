@@ -8,9 +8,8 @@ setting = get_config()
 
 
 async def save_binance_ticker(data):
-    print(data)
     database = await MongoManager.get_instance()
-    #await database.binance_ticker.drop()
+
     if isinstance(data, list):
         for obj in data:
             query = {"symbol": obj["symbol"]}
@@ -26,11 +25,11 @@ async def save_binance_ticker(data):
 
 async def retrieve_latest_ticker(symbol: list):
     database = await MongoManager.get_instance()
-    # await database.binance_ticker.drop()
+    #await database.binance_ticker.drop()
     return await database.binance_ticker.find({"symbol": {"$in": symbol}}).to_list(1000)
 
 
-async def save_candle_stick(data, latest_time):
+async def save_candle_stick(data):
     database = await MongoManager.get_instance()
     query = {"symbol": data["symbol"], "interval": data["interval"]}
     update = {"$set":

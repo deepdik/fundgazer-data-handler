@@ -9,6 +9,8 @@ ENV PYTHONUNBUFFERED 1
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
+RUN pip install websockets==10.4
+
 COPY ./config/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker

@@ -6,7 +6,7 @@ from main import celery
 
 # APIRouter creates path operations for product module
 router = APIRouter(
-    prefix="/api/v1",
+    prefix="",
     tags=["dataHandler"],
     responses={404: {"description": "Not found"}},
 )

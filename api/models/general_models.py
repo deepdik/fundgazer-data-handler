@@ -12,6 +12,7 @@ class APIMethodEnum(str, Enum):
 class DataRefreshType(str, Enum):
     BINANCE_TICKER = "binance_ticker"
     BINANCE_KLINE = 'binance_kline'
+    FYERS_KLINE = 'fyers_candle'
 
 
 class TaskDueType(str, Enum):

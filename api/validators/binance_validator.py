@@ -7,9 +7,7 @@ from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 from pydantic.fields import Field
 
-from api.models.general_models import DataRefreshType, TaskDueType
 from api.utils.datetime_convertor import convert_utc_to_local, get_current_local_time
-from main import settings
 
 
 class PriceTickerValidator(BaseModel):
@@ -95,7 +93,6 @@ class CandlestickDataModel(BaseModel):
         if values["high_price"] < values["low_price"]:
             raise ValueError("Low Price should less than high price")
 
-        print(values["close_time"], values["open_time"])
         if values["close_time"] < values["open_time"]:
             raise ValueError("Closed time should be greater than open time")
 
@@ -142,5 +139,3 @@ def klineValidator(v_data, limit):
         if latest_time < v_data[start].open_time:
             latest_time = v_data[start].open_time
         start += 1
-
-    return latest_time

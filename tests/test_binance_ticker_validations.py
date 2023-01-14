@@ -13,7 +13,7 @@ def test_binance_ticker_round_price():
     """
     """
     data = {"symbol": "XYZ", "price": 10.022293939393}
-    # Decimal place validation ( for stocks 2 , for crypto 8)
+    # Decimal place validation (for crypto 8)
     v_data = PriceTickerValidator(**data)
     assert v_data.symbol == 'XYZ'
     assert len(str(v_data.price).split(".")[1]) == 8

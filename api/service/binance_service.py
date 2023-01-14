@@ -9,15 +9,14 @@ from api.models.binance_models import BinanceTicker, BinanceKline
 from api.repository.binance_repo import save_binance_ticker, retrieve_latest_ticker, \
     save_candle_stick, get_candle_stick
 from api.service.symbol_service import get_supported_symbol_mapping
-from api.utils.api_client.third_party.binance_client import binance_kline_client, binance_ticker_client
+from api.utils.api_client.third_party.binance.binance_client import binance_kline_client, binance_ticker_client
 from api.utils.datetime_convertor import convert_utc_to_local, get_current_local_time
 from api.validators.binance_validator import PriceTickerValidator, \
     CandlestickDataModel, validate_ticker_range, klineValidator, get_symbol_mapping
 from main import settings
-from utils.exception_handler import internal_server_error, validation_exception_handler
+from utils.exception_handler import internal_server_error
 from utils.logger import logger_config
 from fastapi.encoders import jsonable_encoder
-from utils.response_handler import response
 
 logger = logger_config(__name__)
 
@@ -43,7 +42,7 @@ async def save_price_ticker_service(symbols):
             return {"success": False, "not_supported_symb": not_supported_symb}
         print(supp_symbols_list, not_supported_symb)
         resp, status = await binance_ticker_client(mapped_symbol)
-        print(resp, status, 'Service')
+        print(f"{resp} =>>>>>>>>{status}")
         if not status:
             # Retry Logic - Error handler than can push event to rabbitmq
             return {"success": False, "not_supported_symb": not_supported_symb}
@@ -125,15 +124,15 @@ async def save_candle_stick_service(symbols, exchange: str, interval: str = "1d"
                 dict_data.append(dict(zip(fields, data)))
             data = parse_obj_as(List[CandlestickDataModel], dict_data)
 
-            latest_time = klineValidator(data, limit)
+            klineValidator(data, limit)
             local_dt = datetime.now()
             dt_utc = local_dt.astimezone(pytz.UTC)
             local_time = convert_utc_to_local(dt_utc)
             f_data = BinanceKline(kline_data=data, symbol=symbol_mapping.get(symbol),
                                   created_at=local_time, updated_at=local_time,
                                   interval=interval,
-                                  valid_upto=local_time + timedelta(settings.KLINE_DEFAULT_VALID))
-            await save_candle_stick(jsonable_encoder(f_data), latest_time)
+                                  valid_upto=local_time + timedelta(minutes=settings.KLINE_DEFAULT_VALID))
+            await save_candle_stick(jsonable_encoder(f_data))
             completed.append(symbol_mapping.get(symbol))
         except ValidationError as e:
             logger.error(e)

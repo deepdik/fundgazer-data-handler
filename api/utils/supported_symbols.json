@@ -1,3 +1,5 @@
+
+
 {
   "ICXUSDT": {
     "binance":"ICXUSDT"
@@ -79,6 +81,14 @@
   },
   "BATUSDT": {
     "binance":"BATUSDT"
+  },
+  "NSE:SBIN-EQ": {
+    "fyers": "NSE:SBIN-EQ"
+  },
+  "NSE:BAJAJHLDNG-EQ": {
+    "fyers": "NSE:BAJAJHLDNG-EQ"
+  },
+  "NSE:SBICARD-EQ": {
+    "fyers": "NSE:SBICARD-EQ"
   }
-
 }
