@@ -53,3 +53,6 @@ docs/_build/
 .pytest_cache/
 
 celerybeat-schedule
+*.txt
+.DS_Store/
+

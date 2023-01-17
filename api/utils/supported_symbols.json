@@ -82,13 +82,248 @@
   "BATUSDT": {
     "binance":"BATUSDT"
   },
-  "NSE:SBIN-EQ": {
-    "fyers": "NSE:SBIN-EQ"
+
+    "NSE:AXISBANK-EQ": {
+        "fyers": "NSE:AXISBANK-EQ"
+    },
+
+
+    "NSE:BPCL-EQ": {
+          "fyers": "NSE:BPCL-EQ"
+      },
+
+
+      "NSE:TATAMOTORS-EQ": {
+          "fyers": "NSE:TATAMOTORS-EQ"
+      },
+
+
+      "NSE:KOTAKBANK-EQ": {
+          "fyers": "NSE:KOTAKBANK-EQ"
+      },
+
+
+      "NSE:RELIANCE-EQ": {
+          "fyers": "NSE:RELIANCE-EQ"
+      },
+
+
+      "NSE:ICICIBANK-EQ": {
+          "fyers": "NSE:ICICIBANK-EQ"
+
   },
-  "NSE:BAJAJHLDNG-EQ": {
-    "fyers": "NSE:BAJAJHLDNG-EQ"
+
+      "NSE:TATASTEEL-EQ": {
+          "fyers": "NSE:TATASTEEL-EQ"
+
   },
-  "NSE:SBICARD-EQ": {
-    "fyers": "NSE:SBICARD-EQ"
-  }
+
+      "NSE:HDFCBANK-EQ": {
+          "fyers": "NSE:HDFCBANK-EQ"
+
+  },
+
+      "NSE:SBIN-EQ": {
+          "fyers": "NSE:SBIN-EQ"
+
+  },
+
+      "NSE:BHARTIARTL-EQ": {
+          "fyers": "NSE:BHARTIARTL-EQ"
+
+  },
+
+      "NSE:INDUSINDBK-EQ": {
+          "fyers": "NSE:INDUSINDBK-EQ"
+
+  },
+
+      "NSE:BAJFINANCE-EQ": {
+          "fyers": "NSE:BAJFINANCE-EQ"
+
+  },
+
+      "NSE:INFY-EQ": {
+          "fyers": "NSE:INFY-EQ"
+
+  },
+
+      "NSE:HDFC-EQ": {
+          "fyers": "NSE:HDFC-EQ"
+
+  },
+
+      "NSE:GRASIM-EQ": {
+          "fyers": "NSE:GRASIM-EQ"
+
+  },
+
+      "NSE:UPL-EQ": {
+          "fyers": "NSE:UPL-EQ"
+
+  },
+
+      "NSE:ADANIPORTS-EQ": {
+          "fyers": "NSE:ADANIPORTS-EQ"
+
+  },
+
+      "NSE:TCS-EQ": {
+          "fyers": "NSE:TCS-EQ"
+
+  },
+
+      "NSE:LT-EQ": {
+          "fyers": "NSE:LT-EQ"
+
+  },
+
+      "NSE:HCLTECH-EQ": {
+          "fyers": "NSE:HCLTECH-EQ"
+
+  },
+
+      "NSE:WIPRO-EQ": {
+          "fyers": "NSE:WIPRO-EQ"
+
+  },
+
+      "NSE:MARUTI-EQ": {
+          "fyers": "NSE:MARUTI-EQ"
+
+  },
+
+      "NSE:ITC-EQ": {
+          "fyers": "NSE:ITC-EQ"
+
+  },
+
+      "NSE:HINDALCO-EQ": {
+          "fyers": "NSE:HINDALCO-EQ"
+
+  },
+
+      "NSE:ASIANPAINT-EQ": {
+          "fyers": "NSE:ASIANPAINT-EQ"
+
+  },
+
+      "NSE:HINDUNILVR-EQ": {
+          "fyers": "NSE:HINDUNILVR-EQ"
+
+  },
+
+      "NSE:ONGC-EQ": {
+          "fyers": "NSE:ONGC-EQ"
+
+  },
+
+      "NSE:BAJAJFINSV-EQ": {
+          "fyers": "NSE:BAJAJFINSV-EQ"
+
+  },
+
+      "NSE:GAIL-EQ": {
+          "fyers": "NSE:GAIL-EQ"
+
+  },
+
+      "NSE:M&M-EQ": {
+          "fyers": "NSE:M&M-EQ"
+
+  },
+
+      "NSE:IOC-EQ": {
+          "fyers": "NSE:IOC-EQ"
+
+  },
+
+      "NSE:TECHM-EQ": {
+          "fyers": "NSE:TECHM-EQ"
+
+  },
+
+      "NSE:SUNPHARMA-EQ": {
+          "fyers": "NSE:SUNPHARMA-EQ"
+
+  },
+
+      "NSE:DRREDDY-EQ": {
+          "fyers": "NSE:DRREDDY-EQ"
+
+  },
+
+      "NSE:NTPC-EQ": {
+          "fyers": "NSE:NTPC-EQ"
+
+  },
+
+      "NSE:CIPLA-EQ": {
+          "fyers": "NSE:CIPLA-EQ"
+
+  },
+
+      "NSE:COALINDIA-EQ": {
+          "fyers": "NSE:COALINDIA-EQ"
+
+  },
+
+      "NSE:JSWSTEEL-EQ": {
+          "fyers": "NSE:JSWSTEEL-EQ"
+
+  },
+
+      "NSE:BRITANNIA-EQ": {
+          "fyers": "NSE:BRITANNIA-EQ"
+
+  },
+
+      "NSE:BAJAJ-AUTO-EQ": {
+          "fyers": "NSE:BAJAJ-AUTO-EQ"
+
+  },
+
+      "NSE:HEROMOTOCO-EQ": {
+          "fyers": "NSE:HEROMOTOCO-EQ"
+
+  },
+
+      "NSE:EICHERMOT-EQ": {
+          "fyers": "NSE:EICHERMOT-EQ"
+
+  },
+
+      "NSE:DIVISLAB-EQ": {
+          "fyers": "NSE:DIVISLAB-EQ"
+
+  },
+
+      "NSE:POWERGRID-EQ": {
+          "fyers": "NSE:POWERGRID-EQ"
+
+  },
+
+      "NSE:TITAN-EQ": {
+          "fyers": "NSE:TITAN-EQ"
+
+  },
+
+      "NSE:GOLDBEES-EQ": {
+      "fyers": "NSE:GOLDBEES-EQ"
+
+  },
+
+      "NSE:HDFCMFGETF-EQ": {
+          "fyers": "NSE:HDFCMFGETF-EQ"
+
+  },
+
+      "NSE:SBILIFE-EQ": {
+          "fyers": "NSE:SBILIFE-EQ"
+
+  },
+
+      "NSE:HDFCLIFE-EQ": {
+          "fyers": "NSE:HDFCLIFE-EQ"
+      }
 }
