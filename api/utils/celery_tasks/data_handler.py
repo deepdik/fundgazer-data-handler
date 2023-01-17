@@ -52,7 +52,7 @@ def data_refresh(*args, **kwargs):
 celery.conf.beat_schedule = {
     'binance_kline_data_refresh': {
         'task': 'data_refresh',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(minute=1, hour=0),
         'args': [],
         'kwargs': {'symbols': settings.SYMBOL_LIST,
                    "exchange": 'binance', 'interval': '1d',
@@ -61,14 +61,14 @@ celery.conf.beat_schedule = {
     },
     'binance_ticker_data_refresh': {
         'task': 'data_refresh',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(minute=2, hour=0),
         'args': [],
         'kwargs': {"symbols": settings.SYMBOL_LIST, "refresh_type":DataRefreshType.BINANCE_TICKER},
         'options': {'queue': 'data-handler'}
     },
     'fyers_stocks_data_refresh': {
         'task': 'data_refresh',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(minute=3, hour=0),
         'args': [],
         'kwargs': {"symbols": settings.FYERS_SYMBOL_LIST,
                    "refresh_type":DataRefreshType.FYERS_KLINE},
