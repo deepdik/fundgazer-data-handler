@@ -2,7 +2,7 @@ from datetime import timedelta, datetime, date
 
 from fastapi import APIRouter, HTTPException, Body
 
-from api.service.fyers_service import save_stocks_service, get_candle_stick_service
+from api.service.fyers_service import save_stocks_service, get_candle_stick_service, get_latest_ticker_price_service
 from api.validators.fyers_validator import  GetStockParamsValidator
 
 router = APIRouter(
@@ -17,9 +17,9 @@ async def symbol_price_ticker(symbols: str, date_from: date, date_to: date, inte
     return await save_stocks_service(symbols, date_from, date_to, interval)
 
 
-@router.get("/save/latest/price", response_description="")
-async def symbol_price_ticker(symbols: str, date_from: date, date_to: date, interval: str):
-    return await save_stocks_service(symbols, date_from, date_to, interval)
+@router.get("/latest/price", response_description="")
+async def symbol_price_ticker(symbols: str):
+    return await get_latest_ticker_price_service(symbols)
 
 
 @router.get("/kline", response_description="")

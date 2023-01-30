@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from http.client import HTTPException
 
 from api.utils.api_client.third_party.fyers.login_automatic import get_fyers_obj
 
@@ -34,14 +35,23 @@ async def get_fyers_stocks_client(symbol, range_from: date, range_to: date, reso
         return [], False
 
 
-async def get_fyers_latest_price_client(symbols):
+async def get_fyers_latest_price_client(symbols:list):
     """
     data = {"symbols": "NSE:NIFTYBANK-INDEX"}
-
-    :param symbols:
-    :return:
     """
-    data = {"symbols": symbols}
+    payload = {"symbols": ",".join(symbols)}
+    print(f"Getting data for ==>{payload}")
     fyers = await get_fyers_obj()
-    last_price = fyers.quotes(data=data)['d'][0]['v']['lp']
-    return last_price
+    resp_data = fyers.quotes(data=payload)
+    print(f"Response got {resp_data}")
+    if resp_data.get("s") == "ok" or resp_data.get("code") == 200:
+        data = []
+        for ticker in resp_data['d']:
+            data.append({"symbol": ticker["n"], "price": ticker['v']['lp']})
+        return data, True
+    else:
+        return resp_data, False
+
+
+
+

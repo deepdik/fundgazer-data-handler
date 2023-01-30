@@ -19,7 +19,6 @@ class PriceTickerValidator(BaseModel):
     """
     symbol: str = Field(required=True, min_length=1)
     price: float = Field(gt=0, required=True)
-    last_updated: datetime = Field(required=False, default=get_current_local_time())
 
     @validator('price')
     def price_round(cls, value):

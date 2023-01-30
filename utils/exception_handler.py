@@ -1,9 +1,9 @@
 from fastapi import Request, status
+from pydantic.error_wrappers import ValidationError
 
 from main import app
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
+
 
 from utils.response_handler import response
 
@@ -25,8 +25,9 @@ async def internal_server_error(request: Request, exc: RequestValidationError):
 def value_error_exception_handler(request: Request, exc: ValueError):
     return response(error=str(exc), status_code=400)
 
-@app.exception_handler(Exception)
-async def invalid_argument(request: Request, exc: RequestValidationError):
-    return response(error="", status_code=500)
+
+@app.exception_handler(ValidationError)
+def value_error_exception_handler(request: Request, exc: ValueError):
+    return response(error=str(exc), status_code=400)
 
 

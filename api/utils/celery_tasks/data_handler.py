@@ -59,13 +59,13 @@ celery.conf.beat_schedule = {
                    "refresh_type":DataRefreshType.BINANCE_KLINE},
         'options': {'queue': 'data-handler'}
     },
-    'binance_ticker_data_refresh': {
-        'task': 'data_refresh',
-        'schedule': crontab(minute=2, hour=0),
-        'args': [],
-        'kwargs': {"symbols": settings.SYMBOL_LIST, "refresh_type":DataRefreshType.BINANCE_TICKER},
-        'options': {'queue': 'data-handler'}
-    },
+    # 'binance_ticker_data_refresh': {
+    #     'task': 'data_refresh',
+    #     'schedule': crontab(minute=2, hour=0),
+    #     'args': [],
+    #     'kwargs': {"symbols": settings.SYMBOL_LIST, "refresh_type":DataRefreshType.BINANCE_TICKER},
+    #     'options': {'queue': 'data-handler'}
+    # },
     'fyers_stocks_data_refresh': {
         'task': 'data_refresh',
         'schedule': crontab(minute=3, hour=0),

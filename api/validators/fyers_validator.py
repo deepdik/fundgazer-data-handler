@@ -23,7 +23,20 @@ symbols, date_from: date, date_to: date, resolution
 
     @validator('interval')
     def interval_validate(cls, value):
-        if value not in ["1", "2", "3", "5", "10m", "15", "20", "30",
+        """
+        1 minute : “1”
+        2 minute : “2"
+        3 minute : "3"
+        5 minute : "5"
+        10 minute : "10"
+        15 minute : "15"
+        20 minute : "20"
+        30 minute : "30"
+        60 minute : "60"
+        120 minute : "120"
+        240 minute : "240"
+        """
+        if value not in ["1", "2", "3", "5", "10", "15", "20", "30",
                          "60", "120", "240", "D"]:
             raise ValueError("Invalid Interval value")
         return value
@@ -94,6 +107,24 @@ symbols, date_from: date, date_to: date, resolution
                          "60", "120", "240", "D"]:
             raise ValueError("Invalid Interval value")
         return value
+
+    class Config:
+        validate_assignment = True
+
+
+class StockPriceTickerValidator(BaseModel):
+    """
+    Price : (Non negative , non zero , float)
+    Decimal place validation ( for stocks 2)
+    For ticker data, new ticker should be in the x% range of previous ticker .(date should also be considered)
+    Code checks for symbol name ( against default symbol list )
+    """
+    symbol: str = Field(required=True, min_length=1)
+    price: float = Field(gt=0, required=True)
+
+    @validator('price')
+    def price_round(cls, value):
+        return round(value, 2)
 
     class Config:
         validate_assignment = True
