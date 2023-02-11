@@ -1,6 +1,6 @@
-from datetime import timedelta, datetime, date
+from datetime import date
 
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter
 
 from api.service.fyers_service import save_stocks_service, get_candle_stick_service, get_latest_ticker_price_service
 from api.validators.fyers_validator import  GetStockParamsValidator
@@ -10,7 +10,6 @@ router = APIRouter(
     tags=["dataHandler"],
     responses={404: {"description": "Not found"}},
 )
-
 
 @router.get("/save/kline", response_description="")
 async def symbol_price_ticker(symbols: str, date_from: date, date_to: date, interval: str):
