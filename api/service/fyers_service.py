@@ -138,13 +138,15 @@ async def get_fyers_candle_stick_service(params):
                     internal_status_code=InternalStatusCode.HALT_STRATEGY,
                     message=f"No data found for some symbols. Halt the strategies",
                     data=list(diff_symbols),
-                    status_code=503
+                    status_code=503,
+                    success=True
                 )
             return response(
                 internal_status_code=InternalStatusCode.RETRY_AFTER_SOME_TIME,
                 message=f"No data found for some symbols. Please try after some time.",
                 data=list(diff_symbols),
-                status_code=503
+                status_code=503,
+                success=True
             )
 
     return data
@@ -176,4 +178,4 @@ async def get_fyers_ticker_price_service(symbols: str):
     v_data = parse_obj_as(List[StockPriceTickerValidator], resp)
     # converting external symbol to internal symbol mapping
     v_data = jsonable_encoder(get_symbol_mapping(v_data, symbol_mapping))
-    return response(data=v_data, message="success")
+    return response(data=v_data, message="success", success=True)

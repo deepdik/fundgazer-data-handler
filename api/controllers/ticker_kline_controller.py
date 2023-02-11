@@ -2,6 +2,7 @@ import datetime
 from datetime import date
 
 from fastapi import APIRouter
+from fastapi import HTTPException
 
 from api.models.general_models import Platforms
 from api.repository.celery_repo import delete_data_refresh_retry_queue
@@ -14,6 +15,7 @@ from api.utils.datetime_convertor import get_current_local_time
 from api.validators.binance_validator import GetBinanceKlineParamsValidator
 from api.validators.fyers_validator import GetStockParamsValidator
 from config.database.mongo import MongoManager
+from utils.response_handler import response
 
 router = APIRouter(
     prefix="",
@@ -38,7 +40,8 @@ async def get_symbol_kline(symbols: str, interval: str, exchange: Platforms):
             interval=interval
         )
         params = {"symbols": params.symbols, "interval": params.interval}
-        return await get_binance_candle_stick_service(params)
+        data = await get_binance_candle_stick_service(params)
+        return data
 
     elif exchange == Platforms.FYERS:
         params = GetStockParamsValidator(
@@ -50,18 +53,23 @@ async def get_symbol_kline(symbols: str, interval: str, exchange: Platforms):
 
 
 @router.get("/save/kline", response_description="")
-async def save_kline(symbols: str, interval: str, exchange: Platforms):
+async def save_kline(symbols: str, interval: str, exchange: Platforms, date_from: date = None, date_to: date = None):
     if exchange == Platforms.BINANCE:
         return await save_binance_candle_stick_service(symbols, exchange, interval)
     elif exchange == Platforms.FYERS:
-        date_to = get_current_local_time().date()
-        date_from = get_current_local_time() - datetime.timedelta(days=1)
+        if not date_to:
+            date_to = get_current_local_time().date()
+        if not date_from:
+            date_from = get_current_local_time() - datetime.timedelta(days=1)
+
+        # if not (date_to - date_from).days <= 365:
+        #     return response(status_code=400, error="Date can not be greater than 1 year")
         return await save_fyers_stocks_service(symbols, date_from, date_to, interval)
 
 
 @router.get("/test", response_description="")
 async def test():
-    #await data_refresh_retry()
+    # await data_refresh_retry()
     await delete_data_refresh_retry_queue('ICXUSDT', 'binance', '1d')
     # database = await MongoManager.get_instance()
     # data = {"valid_upto": str(get_current_local_time() + datetime.timedelta(minutes=10))}

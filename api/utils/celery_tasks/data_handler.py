@@ -136,7 +136,7 @@ celery.conf.beat_schedule = {
     },
     'fyers_stocks_data_refresh': {
         'task': 'data_refresh',
-        'schedule': crontab(minute=3, hour=0),
+        'schedule': crontab(minute=3, hour=0, day_of_week='mon-fri'),
         'args': [],
         'kwargs': {"symbols": settings.FYERS_SYMBOL_LIST,
                    "refresh_type": DataRefreshType.FYERS_KLINE},

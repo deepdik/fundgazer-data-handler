@@ -26,7 +26,7 @@ async def get_candle_stick(symbols: list, interval: str, curr_time: datetime):
     database = await MongoManager.get_instance()
     query = {"symbol": {"$in": symbols}, "interval": interval, "valid_upto": {"$gte": str(curr_time)}}
     # print(await database.binance_candle_stick.count_documents({}))
-    kline_data = await database.fyers_candle_stick.find(query).to_list(1000)
+    kline_data = await database.fyers_candle_stick.find(query, {"_id": 0}).to_list(1000)
     got_symbols = set()
     for data in kline_data:
         got_symbols.add(data["symbol"])
