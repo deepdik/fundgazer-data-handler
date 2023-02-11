@@ -66,7 +66,7 @@ async def get_fyers_obj():
     # try to get access token from DB first
     token = await get_fyers_access_token()
     if token:
-        return fyersModel.FyersModel(client_id=client_id, token=token["token"], log_path=os.getcwd())
+        return fyersModel.FyersModel(client_id=client_id, token=token, log_path=os.getcwd())
 
     session = accessToken.SessionModel(client_id=client_id, secret_key=SECRET_KEY, redirect_uri=REDIRECT_URI,
                                        response_type='code', grant_type='authorization_code')

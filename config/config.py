@@ -44,6 +44,8 @@ class Settings(BaseSettings):
 
     SYMBOL_LIST: List[str]
     FYERS_SYMBOL_LIST: str
+    DATA_REFRESH_MAX_RETRY: int
+    DATA_REFRESH_CRON: str
 
     class Config:
         case_sensitive = True

@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-celery -A main.celery worker -B --autoscale 20,1 -Q data-handler --loglevel=info
+celery -A main.celery worker -B --autoscale 20,1 -Q data-handler,data-handler-retry --loglevel=info

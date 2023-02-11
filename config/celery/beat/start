@@ -4,4 +4,4 @@ set -o errexit
 set -o nounset
 
 rm -f './celerybeat.pid'
-celery -A main.celery beat --autoscale 20,1 -Q data-handler --loglevel=info
+celery -A main.celery beat --autoscale 20,1 -Q data-handler,data-handler-retry --loglevel=info

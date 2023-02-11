@@ -47,7 +47,7 @@ class MongoManager:
             # wait queue in miliseconds
             waitQueueTimeoutMS=30000,
             # in miliseconds
-            serverSelectionTimeoutMS=30000
+            serverSelectionTimeoutMS=30000,
         )
 
         cls.__client.get_io_loop = asyncio.get_running_loop

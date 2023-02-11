@@ -10,6 +10,7 @@ COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN pip install websockets==10.4
+RUN pip install croniter
 
 COPY ./config/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker

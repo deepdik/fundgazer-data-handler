@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -7,6 +8,7 @@ from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 from pydantic.fields import Field
 
+from api.service.symbol_service import get_supported_symbol_mapping
 from api.utils.datetime_convertor import convert_utc_to_local, get_current_local_time
 
 
@@ -138,3 +140,25 @@ def klineValidator(v_data, limit):
         if latest_time < v_data[start].open_time:
             latest_time = v_data[start].open_time
         start += 1
+
+
+class GetBinanceKlineParamsValidator(BaseModel):
+    """
+    symbols, date_from: date, date_to: date, resolution
+    """
+    symbols: str = Field(required=True, min_length=1)
+    interval: str = Field(required=True)
+
+    @validator('symbols')
+    def symbols_break(cls, value):
+        symbols = value.split(",")
+        return symbols
+
+    @validator('interval')
+    def interval_validate(cls, value):
+        if value not in ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"]:
+            raise ValueError("Invalid Interval value")
+        return value
+
+    class Config:
+        validate_assignment = True

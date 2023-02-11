@@ -5,6 +5,7 @@ from pydantic.class_validators import validator, root_validator
 from pydantic.fields import Field
 from pydantic.main import BaseModel
 
+from api.service.symbol_service import get_supported_symbol_mapping
 from api.utils.datetime_convertor import convert_utc_to_local
 
 
@@ -92,14 +93,15 @@ class FyersCandlestickDataModel(BaseModel):
 
 class GetStockParamsValidator(BaseModel):
     """
-symbols, date_from: date, date_to: date, resolution
+    symbols, date_from: date, date_to: date, resolution
     """
     symbols: str = Field(required=True, min_length=1)
     interval: str = Field(required=True)
 
     @validator('symbols')
     def symbols_break(cls, value):
-        return value.split(",")
+        symbols = value.split(",")
+        return symbols
 
     @validator('interval')
     def interval_validate(cls, value):
@@ -128,3 +130,17 @@ class StockPriceTickerValidator(BaseModel):
 
     class Config:
         validate_assignment = True
+
+
+async def symbol_validator(symbols, exchange):
+    supp_symbols_list = await get_supported_symbol_mapping()
+    not_supported_symb = []
+    symbol_mapping = {}
+    for symbol in symbols:
+        if supp_symbols_list.get(symbol) and supp_symbols_list.get(symbol).get(exchange):
+            symbol_mapping[supp_symbols_list.get(symbol).get(exchange)] = symbol
+        else:
+            not_supported_symb.append(symbol)
+
+    if not_supported_symb:
+        raise ValueError(f"Symbols not supported {not_supported_symb}")

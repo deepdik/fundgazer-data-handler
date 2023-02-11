@@ -9,7 +9,7 @@ services:
     image: dk5f95/datahandler
     command: uvicorn main:app --host 0.0.0.0 --reload --port 8000
     volumes:
-      - /Volumes/MyLab/freelance/dataHandler:/app
+      - .:/app
     restart: on-failure
     ports:
       - 8000:8000

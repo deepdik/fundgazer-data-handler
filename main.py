@@ -1,7 +1,4 @@
-import os
 
-import uvicorn
-from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from config.config import get_config
@@ -57,6 +54,7 @@ async def shutdown():
 from api.routes.apiRoutes import routers
 app.include_router(routers)
 
+from utils.exception_handler import *
 
 # if __name__ == "__main__":
 #     uvicorn.run("server.app:app", host="0.0.0.0", port=8000, reload=True)

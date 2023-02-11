@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import List, Union
+from fastapi.encoders import jsonable_encoder
 
 from api.models.binance_models import BinanceKline
+from api.models.general_models import APIMethodEnum
 from config.database.mongo import MongoManager
 from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne, UpdateMany
 from config.config import get_config
@@ -32,7 +34,7 @@ async def retrieve_latest_ticker(symbol: list):
 
 
 async def save_candle_stick(data: BinanceKline):
-    data = data.dict()
+    data = jsonable_encoder(data)
     database = await MongoManager.get_instance()
     query = {"symbol": data["symbol"], "interval": data["interval"]}
     update = {"$set":
@@ -46,16 +48,21 @@ async def save_candle_stick(data: BinanceKline):
     #     UpdateOne(query, {"$push": {'kline_data': data["kline_data"]}})
     # ]
     # await database.binance_candle_stick.drop()
+
+    print(data["valid_upto"], data["created_at"])
     await database.binance_candle_stick.update_one(query, update, upsert=True)
 
 
 async def get_candle_stick(symbols: list, interval: str, curr_time: datetime):
-    print(symbols)
     database = await MongoManager.get_instance()
-    print(curr_time)
-    query = {"symbol": {"$in": symbols}, "interval": interval, "valid_upto": {"$gte": curr_time}}
+    query = {"symbol": {"$in": symbols}, "interval": interval, "valid_upto": {"$gte": str(curr_time)}}
     # print(await database.binance_candle_stick.count_documents({}))
-    return await database.binance_candle_stick.find(query).to_list(1000)
+    kline_data = await database.binance_candle_stick.find(query).to_list(1000)
+    got_symbols = set()
+    for data in kline_data:
+        got_symbols.add(data["symbol"])
+
+    return kline_data, got_symbols
 
 
 async def retrieve_candle_stick(data):

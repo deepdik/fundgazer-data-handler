@@ -26,8 +26,4 @@ def value_error_exception_handler(request: Request, exc: ValueError):
     return response(error=str(exc), status_code=400)
 
 
-@app.exception_handler(ValidationError)
-def value_error_exception_handler(request: Request, exc: ValueError):
-    return response(error=str(exc), status_code=400)
-
 
