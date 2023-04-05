@@ -56,13 +56,10 @@ class MongoManager:
         elif os.getenv("ENVIRONMENT") == "STG":
             cls.__db = cls.__client.stagedb
         else:
-            cls.__db = cls.__client.devdb
+            logger.info("using DEV environment")
+            cls.__db = cls.__client["fundgazer-dev"]
 
-
-
-        logger.info(
-            "Connected to MongoDB -  %s environment!", os.getenv("ENV")
-        )
+        logger.info("Connected to MongoDB -  %s environment!", os.getenv("ENV"))
 
     @classmethod
     async def close_database_connection(cls):

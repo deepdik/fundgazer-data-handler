@@ -11,18 +11,19 @@ from api.utils.datetime_convertor import convert_utc_to_local
 
 class SaveStockQueryValidator(BaseModel):
     """
-symbols, date_from: date, date_to: date, resolution
+    symbols, date_from: date, date_to: date, resolution
     """
+
     symbols: str = Field(required=True, min_length=1)
     interval: str = Field(required=True)
     date_from: date = Field(required=True)
     date_to: date = Field(required=True)
 
-    @validator('symbols')
+    @validator("symbols")
     def symbols_break(cls, value):
         return value.split(",")
 
-    @validator('interval')
+    @validator("interval")
     def interval_validate(cls, value):
         """
         1 minute : “1”
@@ -37,12 +38,24 @@ symbols, date_from: date, date_to: date, resolution
         120 minute : "120"
         240 minute : "240"
         """
-        if value not in ["1", "2", "3", "5", "10", "15", "20", "30",
-                         "60", "120", "240", "D"]:
+        if value not in [
+            "1",
+            "2",
+            "3",
+            "5",
+            "10",
+            "15",
+            "20",
+            "30",
+            "60",
+            "120",
+            "240",
+            "D",
+        ]:
             raise ValueError("Invalid Interval value")
         return value
 
-    @validator('date_from')
+    @validator("date_from")
     def date_from_validate(cls, value):
         try:
             bool(datetime.strptime(str(value), "%Y-%m-%d"))
@@ -50,7 +63,7 @@ symbols, date_from: date, date_to: date, resolution
         except ValueError:
             raise ValueError("Invalid date form. Shloud be in YYYY-MM-DD")
 
-    @validator('date_to')
+    @validator("date_to")
     def date_to_validate(cls, value):
         try:
             bool(datetime.strptime(str(value), "%Y-%m-%d"))
@@ -63,8 +76,7 @@ symbols, date_from: date, date_to: date, resolution
 
 
 class FyersCandlestickDataModel(BaseModel):
-    """
-    """
+    """ """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -95,18 +107,31 @@ class GetStockParamsValidator(BaseModel):
     """
     symbols, date_from: date, date_to: date, resolution
     """
+
     symbols: str = Field(required=True, min_length=1)
     interval: str = Field(required=True)
 
-    @validator('symbols')
+    @validator("symbols")
     def symbols_break(cls, value):
         symbols = value.split(",")
         return symbols
 
-    @validator('interval')
+    @validator("interval")
     def interval_validate(cls, value):
-        if value not in ["1", "2", "3", "5", "10m", "15", "20", "30",
-                         "60", "120", "240", "D"]:
+        if value not in [
+            "1",
+            "2",
+            "3",
+            "5",
+            "10m",
+            "15",
+            "20",
+            "30",
+            "60",
+            "120",
+            "240",
+            "D",
+        ]:
             raise ValueError("Invalid Interval value")
         return value
 
@@ -121,10 +146,11 @@ class StockPriceTickerValidator(BaseModel):
     For ticker data, new ticker should be in the x% range of previous ticker .(date should also be considered)
     Code checks for symbol name ( against default symbol list )
     """
+
     symbol: str = Field(required=True, min_length=1)
     price: float = Field(gt=0, required=True)
 
-    @validator('price')
+    @validator("price")
     def price_round(cls, value):
         return round(value, 2)
 
@@ -137,7 +163,9 @@ async def symbol_validator(symbols, exchange):
     not_supported_symb = []
     symbol_mapping = {}
     for symbol in symbols:
-        if supp_symbols_list.get(symbol) and supp_symbols_list.get(symbol).get(exchange):
+        if supp_symbols_list.get(symbol) and supp_symbols_list.get(symbol).get(
+            exchange
+        ):
             symbol_mapping[supp_symbols_list.get(symbol).get(exchange)] = symbol
         else:
             not_supported_symb.append(symbol)

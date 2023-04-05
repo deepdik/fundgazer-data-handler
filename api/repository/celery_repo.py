@@ -6,11 +6,15 @@ from fastapi.encoders import jsonable_encoder
 
 async def data_refresh_retry_queue(data: DataRefreshRetryQueue, method):
     database = await MongoManager.get_instance()
-    if method == 'GET_ALL':
+    if method == "GET_ALL":
         return await database.data_refresh_retry_queue.find({}).to_list(1000)
 
     elif method == "SAVE":
-        query = {"symbol": data.symbol, "exchange": data.exchange, "interval": data.interval}
+        query = {
+            "symbol": data.symbol,
+            "exchange": data.exchange,
+            "interval": data.interval,
+        }
         # search in db
         retry_data = await database.data_refresh_retry_queue.find_one(query)
         if retry_data:
@@ -18,15 +22,17 @@ async def data_refresh_retry_queue(data: DataRefreshRetryQueue, method):
                 # delete from queue
                 await database.data_refresh_retry_queue.delete_one(query)
             else:
-                update = {"$set": {"retry_count": retry_data["retry_count"]+1}}
-                await database.data_refresh_retry_queue.update_one(query, update, upsert=True)
+                update = {"$set": {"retry_count": retry_data["retry_count"] + 1}}
+                await database.data_refresh_retry_queue.update_one(
+                    query, update, upsert=True
+                )
         else:
             await database.data_refresh_retry_queue.insert_one(jsonable_encoder(data))
 
 
 async def get_data_refresh_retry_status(symbols, interval, exchange: Platforms):
     database = await MongoManager.get_instance()
-    query = {"symbol":  {"$in": symbols}, "exchange": exchange, "interval": interval}
+    query = {"symbol": {"$in": symbols}, "exchange": exchange, "interval": interval}
     data = await database.data_refresh_retry_queue.find(query).to_list(1000)
     if not data:
         return False

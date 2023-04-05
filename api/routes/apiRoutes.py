@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter
 
 from api.controllers import ticker_kline_controller, task_schedular

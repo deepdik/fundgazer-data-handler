@@ -1,0 +1,20 @@
+{
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "editor.fontSize": 12,
+    "window.zoomLevel": 0,
+    "code-runner.executorMap": {
+      "javascript": "node",
+      "python": ".venv/bin/python",
+      "html": "\"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\""
+    },
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.ignorePatterns": [
+      "**/site-packages/**/*.py",
+      ".vscode/*.py"
+    ],
+    "python.linting.lintOnSave": true,
+    "python.languageServer": "Pylance",
+    "python.analysis.autoImportCompletions": true
+  }
