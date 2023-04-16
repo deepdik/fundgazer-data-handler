@@ -6,37 +6,37 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dk5f95/datahandler
+    image: datahandler
     command: uvicorn main:app --host 0.0.0.0 --reload --port 8000
     volumes:
       - .:/app
     restart: on-failure
     ports:
       - 8000:8000
-#    depends_on:
-#      - rabbitmq
+    #    depends_on:
+    #      - rabbitmq
     networks:
-      - strategymanager_strategy-network
+      - data-handler-network
 
-#  redis:
-#    image: redis:latest
-#    ports:
-#      - 6378:6379
-#    depends_on:
-#      - rabbitmq
+  #  redis:
+  #    image: redis:latest
+  #    ports:
+  #      - 6378:6379
+  #    depends_on:
+  #      - rabbitmq
 
   datahandler-celery-worker:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dk5f95/datahandler-celery-worker
+    image: datahandler-celery-worker
     command: /start-celeryworker
     volumes:
       - .:/app
-#    depends_on:
-#      - rabbitmq
+    #    depends_on:
+    #      - rabbitmq
     networks:
-      - strategymanager_strategy-network
+      - data-handler-network
 
   datahandler-celery-beat:
     build:
@@ -44,14 +44,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
-    image: dk5f95/datahandler-celery-beat
+    image: datahandler-celery-beat
     command: /start-celerybeat
     depends_on:
       - datahandler-celery-worker
-#      - rabbitmq
+    #      - rabbitmq
     networks:
-      - strategymanager_strategy-network
+      - data-handler-network
 
 networks:
-  strategymanager_strategy-network:
+  data-handler-network:
     external: true

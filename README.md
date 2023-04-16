@@ -60,3 +60,31 @@ http://localhost:8000/docs
 http://localhost:8000/api/v1/hello
 ```
 
+
+# Run via Docker
+
+Create a rabbitmq broker
+* create via docker
+```bash
+docker run rabbitmq
+```
+* create on rabbitmq website
+ <br>
+ 
+ ## In any case update the variable `CELERY_BROKER_URL` in file:./config/environ/.env.
+
+To build the docker compose file
+```bash
+docker compose build
+```
+
+Create a docker network
+```bash
+docker network create <network-name-from-the-docker-compose-file>
+```
+
+Run the comtainers
+```bash
+docker compose up
+```
+
